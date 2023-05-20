@@ -1,26 +1,69 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
+const readline = require('readline');
+
+
+// Array of Medium writeup URLs 
+const mediumUrls = [];
+
+// function to read url from file
+async function readFileToArray(filePath) {
+  const fileStream = fs.createReadStream(filePath);
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  const lines = [];
+  for await (const line of rl) {
+    // Add each line to the array
+     mediumUrls.push(line);
+  }
+
+  return lines;
+}
+
+// read the file
+const filePath = 'urls.txt';
+readFileToArray(filePath)
+  .then(mediumUrls => {
+    // console.log('File content:');
+    // console.log(mediumUrls);
+  })
+  .catch(error => {
+    console.error('Error reading file:', error);
+  });
+
 
 async function increaseReadingTime() {
-  const browser = await puppeteer.launch({ headless: false });
+  // const browser = await puppeteer.launch({ headless: false });
+   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
   // Array of user agents
-  const userAgents = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/85.0',
-  ];
-
-  // Array of Medium writeup URLs
-  const mediumUrls = [
-    'https://aureliasilva.medium.com/do-you-want-to-be-happy-do-not-be-patient-a4096b7e3aaa',
-    'https://medium.com/illumination/why-do-you-need-the-approval-of-others-38d277e029d',
-    'https://medium.com/illumination/hand-picked-articles-2023-34-9be5c39fae8',
-    'https://aureliasilva.medium.com/do-you-want-to-be-happy-do-not-be-patient-a4096b7e3aaa',
-
-  ];
-
+ const userAgents = [
+   // Windows Chrome
+   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
+ 
+   // Windows Firefox
+   'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+   'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
+   'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0',
+ 
+   // macOS Chrome
+   'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+   'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+   'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
+ 
+   // macOS Firefox
+   'Mozilla/5.0 (Macintosh; Intel Mac OS X 11.5; rv:89.0) Gecko/20100101 Firefox/89.0',
+   'Mozilla/5.0 (Macintosh; Intel Mac OS X 11.5; rv:88.0) Gecko/20100101 Firefox/88.0',
+   'Mozilla/5.0 (Macintosh; Intel Mac OS X 11.5; rv:87.0) Gecko/20100101 Firefox/87.0'
+ ];
+ 
+ 
   for (const url of mediumUrls) {
     // Generate a random user agent
     const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
@@ -40,7 +83,7 @@ async function increaseReadingTime() {
       await new Promise((resolve) => {
         const scrollHeight = document.documentElement.scrollHeight;
         const distance = 100;
-        const intervalTime = 700; // Delay between each scroll (in milliseconds)
+        const intervalTime = 750; // Delay between each scroll (in milliseconds)
         let scrollOffset = 0;
 
         const timer = setInterval(() => {
@@ -61,7 +104,7 @@ async function increaseReadingTime() {
       await new Promise((resolve) => {
         let totalHeight = document.documentElement.scrollHeight;
         const distance = -100;
-        const intervalTime = 900; // Delay between each scroll (in milliseconds)
+        const intervalTime = 750; // Delay between each scroll (in milliseconds)
 
         const timer = setInterval(() => {
           if (window.scrollY === 0) {
